@@ -1,0 +1,355 @@
+by Günther Montag 
+
+V.0.8  of 15.02.2007
+I am back again after timeout
+I do it slowly... (because my family & job is Nr. 1)
+I now see: so much cryptic things due to historicy growth...
+I tried to de-cryptify.
+hfkernel:
+hardware detect! Should now find out if '-n' (no mmap, no DMA)
+option is needed, and if RDTSC not working ('-R' option).
+CW:
+The elbug decodes now your own keying.
+PC speaker output. Sounds nice.
+I moved from inb/outb to IOCTLS so it works not only on pentiums.
+Docs: 
+Simplified.
+man hf and hfterm is now the same.
+Howtos have been shortened. I removed old rubbish.
+start script: 
+The hf start script starts now only hfterm, and hfterm starts hfkernel.
+hfkernel has no mode running at start. The modes are controlled by hfterm only.
+Newer kernels (2.6...) do a different thread handling.
+hfkernel and hfterm have both to be started with the prefix 
+LD_ASSUME_KERNEL=2.2.5
+I worked this into the hf start script.
+Configuration:
+Now /etc/hf.conf is obsolete.
+All configuration is done from within hfterm's config menu.
+The calibration programs reffreq and dcf77rx now write their outoput into
+/usr/etc/calibrations. They have to be taken by hand into hfterm's config menu.
+Cleared makefiles and configure.ac.
+Now only one configure.ac in the main dir.
+Fixes:
+Integrated parts of Diane's patch for free BSD, thanks!
+Many bugfixes, as usual.
+Especially in changing modes, now it seems to give less crashes. 
+Anyway, do not click too often, do not change modes while transmitting!
+MT63: 
+I switched back to Pawel's original soundcard approach 
+(half duplex only, switches between read and write) 
+because my glue to Tom's full-duplex code resulted in hangs sometimes.
+At the same time Diane corrected this glue in his patch 
+so now 2 versions of code (patched 0.7.3 versus 0.8) can be compared.
+
+V. 0.7.3  15.3.2005 
+CW - ELBUG! For mouse and paddle!
+There is also an elbug.c console program included, for paddle only.
+AUTOUPDATE to the new autotools, thanks for a big patch 
+with this by Joop, which is also clearing the doc dirs, 
+and creating subdirs for man and german manpages.
+"No-MMAP" option '-n' is now standard for hfkernel 
+(set in config file /etc/hf.conf)
+to make first start and getting-to-know less frustrating.
+hfterm has problems with new standard language setting utf-8, so, 
+for the German ü ä ö ß to be printed correctly,
+hf script sets the LANG temporarily to de_DE.ISO-8859-1 for hfterm.
+Resets it again at the end.
+Simplified configuration. Improved docs. Again many fixes. 
+A little wait in autotx() improves automatic response for mailbox 
+(the first 4 or 5 chars were swallowed in Pactor Amtor FEC).
+Squelch configurable by parameters menu.
+Mailbox host & port configurable by parameters menu.
+hftcp, an example script for remote-control via tcp, and 
+info how-to use it added.
+
+V. 0.7.2  17.2.2005 
+some fixes, crashbreakers, endless-loop-unloopers, 
+trained the thread-starter in psychotherapeutic self-relief
+to prevent crash from chaos-clicking....
+
+V. 0.7.1 15.2.2005 
+ADDITIONAL SOUND DRIVER ACCESS FOR ALSA API
+Should be helpful if hf ran only with -n
+(no-mmap) option before, as the ALSA API gives better mmap support. Many
+soundcards CAN do mmap(), although of the errors in/by the (OSS) drivers.
+If you want to use ALSA, change the audio device from /dev/dsp to hw:0.0 in
+/etc/hf.conf.
+PORTECHO 
+Test program for TCP socket. 
+TCP socket improved, should now really be universal,
+means, not only for F6FBB, but for any program that can be accessed via
+TCP. (Don't launch the missiles!) 
+(The F6FBB-special code is now only active if you use port 6300.)
+RE-WRITTEN HOWTO 
+now structured, clarified, especially for OSS/ALSA problems, F6FBB config. 
+BUGFIXES... 
+Compiler error because now in hfkernel c and c++ (MT63) is
+linked, the linker must now be g++, or, gcc with -lstdc++. 
+The crash with hfterm hanging in an endless loop cleared by a counter for
+hfterm's polls for the hfapp socket, exits at a max value of 1000. 
+This helps on my old box, not on my new (with SuSE 9.2).
+The crash at start is gone if I do not let hfkernel run in an xterm-e.
+Some more compiler warnings cleared. 
+Auto-update of ~/hfterm.rc by hf script in case of program update.
+Beautified output of paccalc, which calculates pactor quality per SNR.
+Fixed bug in dcf77rx, summertime and wintertime was  changed. I is really
+wintertime now!
+
+V.0.7
+20.1.2005
+MT63:
+Pawel Jalocha`s MT63 included as new mode, can be run from hfterm,
+plus the complete mt63 package as console programs mt63rx- -tx and -trx,
+plus experimental tools and calibration tool ratecal1. 
+SQUELCH:
+A squelch extra for fsk and mt63, triggered by the fft routines in 
+spectrum.c (so it works after the first call of the spectrum).
+Improves rx quality, makes the mailbox worth testing also for non-arq modes!
+BEACON:
+Mailbox and beacon combined now possible, mailbox-beacon text.
+ALSA IN PREPARATION:
+Dummy files alsa.c and alsa.h prepared, for alsa driver to come.
+MAILBOX:
+Improved configuration on F6FBB and documentation on this in the howto.
+Example file. Instruction for a binary hack to change greeting message.
+BUGFIXES:
+reffreq and dxf77rx: they gave the "cpumhz" in Hz instead of MHz 
+and wrote that also into config file, now o.k.
+With the new font carriage-returns were printed
+as "hook", a workaround for this now replaces it by spaces.
+Backspaces now delete backwards correctly in Pactor and also MT63.
+Autotx /rx and automatic QRT functions written new, clearer, many fixes.
+Better names and comments for functions in mailbox.c, 
+to make it clearer for others who want to use them in other programs.
+Arranged directory structure in hfkernel completely new for clarity,
+Partially re-sorted and renamed headers, cleared confused include wiring. 
+Removed kdrv (kernel modules) and kernel (user interface to
+kernel modules) completely because obsolete (old hardware only)
+and not used, can not maintain it.
+
+V.0.6.5
+15.11.04
+Sorry, 0.6.4 crashed after some minutes,
+bug in automatic partial save of rx file,
+overflow of rx window buffer.
+Beautified font in gtk windows (now fixed width).
+
+V.0.6.4
+9.11.04
+Calibration programs:
+reffreq now with -n option.
+Tested the -n options for reffreq and dcf77rx:
+With both, the (mostly needed) 
+sound_corr is quite the same and could be useful,
+the others vary.
+Improved output of dcf77rx and reffreq,
+They now write to the config file /etc/hf.conf themselves!
+Unified names of the 3 correction factors.
+Many and important bugfixes:
+Shift is now indicated correctly in spectru m.
+Fixed Password error on mailbox connect, 
+hanging pactor connect on mailbox disconnect.
+(Seems bug of F6FBB:
+In my mailbox_test_port() function I test read, write and error 
+with a select() call. When F6FBB disconnects, it gives no err (OOB) msg,
+but the select says, there is something to read, but no read possible!)
+Fixed ugly gtk errors removed (came from writing to not-yet-existing
+gtk-texts), ugly segmentation fault on exit of hfterm.
+rpm was too fat, contained the (not needed) hfkernel_...'s, removed them
+from dist.
+Again thanks a lot to the mailinglist friends, especially Dave Hambly! 
+
+V.0.6.3
+16.10.04
+Improved and debugged the hf start-script very much, 
+it uses dialog now, it checks configuration and gives info for newbie users.
+Mailbox test function: Simulates remote user by writing into the
+hfterm rx window.
+Renamed hfkernel_user -> hfkernel
+Took hfkernel_link and hfkernel_kernel out of /usr/bin
+to make rpm smaller and because not experimented with at the moment.
+Improved rpm, manpages now in the rpm!
+Clarified doc, explained common errors in short.
+Bugfixes...
+Thanks a lot to the mailinglist friends for bugreports 
+although I could not yet fix them all...
+
+V.0.6.2
+26.09.04
+more bugfixes, e.g. in makefiles
+specfiles improved, options for SuSE, Debian
+new manpage man hf
+startscript improved
+
+V.0.6.1
+13.09.2004
+Some bugfixes
+with patch by Chris Vine (thanks!):
+ - characters longer than 1 line removed, gave errors with gcc >= 3.3
+ - some missing includes
+corrected some mistakes (hard copies of cp or ginstall) in makefiles
+docs and examples now in /usr/share/hf
+and - depending on distribution - in /usr/share/doc/hf
+or /usr/share/doc/packages/hf.
+specfile prepared in doc dir, please try rpm 
+Pactor mailbox list (thanks Jost) included in doc and help
+tx in color
+
+V.0.6
+30.07.2004
+a lot done, so 0.6..
+Main things:
+- THE AUTOTX AND AUTORX FUNCTIONS!
+- THE BEACON!
+- THE MAILBOX!	
+- The experimental no-mmap code (option -n)
+works bad for ESS 1938 (sounds good, but all some seconds xruns in receive),
+works quite good for old soundblaster 16, receives a bit and sends a bit in pactor
+and rtty, so hopa also the other modes.
+For halfduplex it is not yet implemented,
+I did not try it with calibration. But hope is there.
+- THE HF startscript that can do all, 
+made hfkernel_user suid root, to be started simply by user.
+- Configuration file /etc/hf.conf.
+-h (force halfduplex) option.
+- hfkernel:
+xrun endless loop crash brake count, exits after 1300 xruns.
+- Doc: 
+you read it! simplified, put hfterm.txt and hfkernel.txt into 
+the main readme, which is now called howto, simpler now. 
+- Updated manpages, but will not update them regularly.
+- Lots of debug. Maybe made some more bugs.
+- dcf77: 
+solved a little "year 2000 problem" in the output, now it's 2004, 
+is this a record?
+clarified output, reduced verbose levels from 8 to 2, 
+now also output without -v, rotating rod, system time set function, 
+built a LF converter (circuit in doc),
+tested dcf77rx program which is sensitive to atmospheric noise, but good.
+- RTTY: 
+diddle.
+- Pactor:
+In pactor rx removed the workaround for bad crc, did not do good.
+- hfterm: 
+shortcuts with strg instead of shift, does not disturb while
+writing to the tx window any more.
+Descrambled status display output. 
+
+V.0.5
+24.01.2004
+a lot done, so 0.5.
+should have become CHRISTMAS EDITION but too late..
+my wife left me already... (only for holiday, this was fun only)
+hfkernel:
+variable "brake" counts to "brakepoint" (70) and exits when too many xruns.
+Xrun and endless loops had caused crases with some soundcards / drivers.
+(mmap problem).
+fixed assembler 'bugs' (l1/user/refclock.c and util/filtbench.c)
+with the help of Micha, via SuSE-programming mailing list, tnx!
+(before the asm's had compiled with old, not with new gcc 3.2, so
+I had outcommented them in my despair....)
+Special important is the first one, now I hope time correction 
+with RDTSC runs with half duplex soundcards.
+pactor.c: more debug output, workaround for bad crc's in memory arq 
+(which had interrupted connections).
+A SPECIAL NEW PACTOR-ONLY STANDBY MODE IMPROVES PACTOR MONITORING !!!
+In pactor rx a workaround for bad crc, it prints instead of bad crc now with warning.
+hfterm:
+rx window scrolls now, and many other graphic beautifications improvements!
+I think it looks better now.
+changed layout, fixtext now right side.
+Fixtexts: Can now also parse last log entry, name, qth, rst, logged call etc.!
+File-on-demand-store mode, automatic storage of rx to prevent window overflow (and crash),
+now the text freezes before storing, i hope this prevents storage of rubbish, 
+which had made it appear sometimes as a binary file before.
+menu option to send file other than fixtext. Beacon prepared.
+Start of a fix in hfterm/src/main.c: edit_backspace. 
+Now it does as if it sends backspaces in
+pactor (it deletes backwards in rx window), but still does not send. 
+monitor: less output, better automatic deletion, hope less crashing.
+Status display: removed rubbish output in RTTY mode.
+scripts:
+New startscript hfsudo, because knoppix needs sth like this.
+combined startscripts now begin with "xterm -e" so that you see
+hfkernel running in background window on X-screen.
+hft starts hfterm, it is called by the 3 hfkernel-starters.
+help:
+examplefiles for fixtexts, brags now in /usr/share/doc/packages/hf/hf-examplefiles.
+Much more, i forgot...
+
+V.0.4.3
+11.11.2003
+hfkernel:
+Fixed another self-made bug in l1/user/oss.c:
+hdx_driver obuf mmap, restored as it was, now it works, sorry!
+(It had been one of my desparate trials in making it
+run for ALSA)
+scripts:
+In hfkernel_user -h the option -i also appears now,
+it had been there before. (invert PTT)
+Improved main start script,
+now the cpu Mhz rate is fetched automagically from dmesg.
+hfterm:
+Little bug in hfterm/src/main.c in versionstring, removed \n.
+Logbook: replaced "delete all" (nonsense!!) by "archivate log"!
+general:
+Changed some file names, seems now clearer and shorter.
+Changed directory settings, adapted to FHS.
+errlog now in /var/log.
+Doc now in /usr/share/doc/packages/hf.
+Binaries and startscripts now in /usr/bin.
+Personal directory now hf instead of hftermfiles.
+Improved documents.
+
+V.0.4.2
+4.10.2003
+IMPORTANT BUGFIXES !!!
+fixed bugs in l1/user/oss.c:
+the PROT_WRITE (see above) in mmapping the soundcard
+was WRONG, it made crash in endless loop.
+Found the reason for segfaults: 
+it was a memcpy to a not-allocated region,
+both in hdx_driver and fdx_driver.
+Wonder why it had worked before with OSS!
+Now it runs with ALSA 0.9.7 in my machine.
+
+V.0.4.1
+9.9.2003
+begin to care for this ChangeLog
+begin with three-parts-version numbers
+removed startkern_pl in source directory, not used any more
+l1/user/oss.c line 249: fixed bug in calculation of tx-delay
+l1/user/oss.c line 337: added '| PROT_WRITE ' in mmap instruction
+    hope this helps overcoming program stop for ALSA OSS emulation
+    in my machine with ALSA 0.9.0 it ends up with xrun after this change
+    ALSA OSS emu is at the momend very hard worked at
+    see www.alsa.org for docu and mailing list
+
+V.0.4
+about March-June 2003
+many little bugs I do not remember
+so it compiles now also with newer compiler
+in the hfterm graphic interface I brought most of the functions to work
+like log, parameters storing, help.
+Fixed stack overrun in monitor function by limiting contents of the GtkText
+many other things
+rewrote documentation, Translation German / English
+
+V.0.3a
+about 2001-2002
+by Axel
+many ideas and new functions for the graphic interface
+thanks for inspiring me!
+
+V.0.2a
+(by Axel)
+graphic refresh & many good ideas!!!
+thanks!!!
+
+V.0.1
+(has been made by Tom Sailer)
+the main work!
+See his docs, man hfkernel! 
+Thanks !!!!
+

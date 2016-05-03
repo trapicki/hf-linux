@@ -1,0 +1,96 @@
+.TH DCF77RX 1 "DCF77 utilities" "HB9JNX" \" -*- nroff -*-
+
+.SH NAME
+dcf77rx \- soundcard DCF77 (and HBG) beacon receiver
+
+.SH SYNOPSIS
+.B dcf77rx
+[\-a audio device] [\-s] [\-n] [\-v verboselevel (1 or 2)] [\-g] [\-p] [\-l] [\-u] [\-t] 
+
+.SH DESCRIPTION
+.B dcf77rx
+is a soundcard demodulator for time reference signals transmitted by
+the transmitters
+.BR DCF77
+and
+.BR HBG
+on LF frequencies. The program expects the transmitter signal
+downconverted to  an audio passband frequency of 1kHz by an LSB or USB
+receiver.  A circuit for home-brewing such a transverter is included in
+the docs of the hf package.
+.PP
+The decoded time information is used to derive correction factors for
+the sampling rate, the gettimeofday clock  and to measure the exact CPU
+clock frequency.  These clock sources are used for calibration in my
+AMTOR/Pactor1 package (hf)  as reference clocks. This program is part of
+the package.
+
+.SS OPTIONS
+.TP
+.I \-a
+specify the path to the sound driver (default: /dev/dsp on Linux,
+/dev/audio on Solaris).
+
+.TP
+.I \-s
+use standard input instead of audio input. Format is 8kHz 16bit words 1
+channel in the endianness of the CPU.
+
+.TP
+.I \-n
+do not use the `mmap()` way of approaching the soundcard, which means,
+do not read directly from the soundcard dma buffer. Some soundcards do
+not support mmap mode. This option is experimental, it is not yet tested
+how good the results will be! 
+
+.TP
+.I \-v
+Set the verbosity level (1 or 2, default 0). The higher the number, the
+more debugging information is written  to standard error. At first use,
+try level 2 to get familiar with how it works.
+
+.TP
+.I \-g
+HBG mode.
+
+.TP
+.I \-p
+DCF77 phase mode. DCF77 transmits the time information amplitude modulated 
+and phase modulated with a pseudorandom code. 
+This option uses the latter to decode the time. 
+This is strongly recommended, as the PN code is more robust and allows 
+much more exact determination of the second pulses.
+
+.TP
+.I \-l
+Receiver uses LSB (lower sideband) mode.
+
+.TP
+.I \-u
+Receiver uses USB (upper sideband) mode.
+
+.TP
+.I \-t
+Set the system time to the received MEZ btw MESZ (CET btw CEST) from DCF77.
+
+.SH BUGS
+In DCF77 BPSK PN mode, due to the small number of searchers and therefore low system load, the receiver requires around 15sec to acquire the second clock.
+.PP
+Due to the nature of the amplitude modulated transmissions from HBG and DCF77, the receiver is quite sensitive to noise and preturbances.
+.PP
+The receiver requires more than one minute to acquire time,
+due to the nature of the transmissions.
+To calculate correction factors, the program should run at least 15 minutes.
+Tune the receiver patiently, first so that the carrier frequency offset is smaller than
+about 1 Hz (you see it with -v 2) and then the second ticks should be catched as 
+secondly as possible, you can see this by the rotating rod or also as text with -v 2.
+Best calibration time is daytime.
+Do not believe the first output, see if an exact value comes repeatedly,
+because errors are possible due to noise! 
+
+.SH CREDITS
+Hans-Guenter DF4OX/DL0PTB sent me printed documentation about the DCF77 
+transmission format which helped me a lot.
+
+.SH AUTHOR
+Thomas Sailer, HB9JNX/AE4WA, sailer@ife.ee.ethz.ch and some small adds by Günther Montag, dl4mge@darc.de
